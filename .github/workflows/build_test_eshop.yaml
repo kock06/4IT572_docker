@@ -80,5 +80,5 @@ jobs:
       
       - name: Run Tests
         run: |
-          nmp run test -- --colors
+          npm run test -- --colors
   
