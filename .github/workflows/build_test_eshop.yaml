@@ -31,7 +31,7 @@ jobs:
         run:  |
           npm ci
   
-   Build:
+  Build:
     needs: Install
     runs-on: ubuntu-latest
 
