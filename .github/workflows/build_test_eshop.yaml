@@ -52,7 +52,7 @@ jobs:
           path: node_modules
           key: node_modules-${{ hashfiles('**package-lock.json') }}
       
-      -name: Build
+      - name: Build
         run: |
           npm rebuild node-sass --force
           nmp run build -- --colors
