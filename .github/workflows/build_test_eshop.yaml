@@ -1,5 +1,5 @@
+git config --global --add url."git@github.com:".insteadOf "https://github.com/"
 name: 'Build and test our e-shop'
-
 
 on:
   workflow_dispatch:
