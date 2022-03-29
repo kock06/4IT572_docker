@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v3.3.4
+        uses: actions/checkout@v3
         with:
           token: ${{ secrets.WORKFLOW_TOKEN }}
 
@@ -37,7 +37,7 @@ jobs:
 
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v3.3.4
+        uses: actions/checkout@v3
         with:
           token: ${{ secrets.WORKFLOW_TOKEN }}
       
@@ -63,7 +63,7 @@ jobs:
 
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v3.3.4
+        uses: actions/checkout@v3
         with:
           token: ${{ secrets.WORKFLOW_TOKEN }}
       
