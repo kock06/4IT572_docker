@@ -55,7 +55,7 @@ jobs:
       - name: Build
         run: |
           npm rebuild node-sass --force
-          nmp run build -- --colors
+          npm run build -- --colors
            
   Test:
     needs: Install
