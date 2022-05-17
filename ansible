@@ -1,0 +1,75 @@
+- name: Deploy to EC2
+  hosts: localhost
+  connection: local
+
+  tasks:
+    - name: Launch EC2 instance
+      amazon.aws.ec2:
+        instance_type: t2.micro
+        image: ami-0c02fb55956c7d316
+        region: us-east-1
+        key_name: vockey
+        vpc_subnet_id: subnet-0d6defecf83953946
+        assign_public_ip: yes
+        wait: yes
+        count: 1
+        group: eshop
+        aws_access_key: "{{ access_key }}"
+        aws_secret_key: "{{ secret_key }}"
+        security_token: "{{ session_token }}"
+      register: ec2
+
+    - name: Add new instance to host group
+      add_host:
+        hostname: "{{ item.public_ip }}"
+        groupname: launched
+      loop: "{{ ec2.instances }}"
+
+    - name: Wait for SSH to come up
+      delegate_to: "{{ item.public_dns_name }}"
+      wait_for_connection:
+        delay: 30
+        timeout: 300
+      loop: "{{ ec2.instances }}"
+
+- name: Configure EC2
+  hosts: launched
+  connection: ssh
+
+
+  tasks:
+    - name: Add Centos Extras
+      shell: yum-config-manager --enable extras
+      become: yes
+
+    - name: Install Docker and Git
+      yum:
+        name:
+          - git
+          - docker
+        state: latest
+        update_cache: yes
+      become: yes
+    - name: Start Docker on startup
+      shell: systemctl enable docker
+      become: yes
+    - name: Set rights to Docker
+      shell: usermod -a -G docker ec2-user
+      become: yes
+    - name: Get eshop from GIT
+      git:
+        repo: 'https://github.com/antydex/4IT572_docker'
+        dest: ./app 
+
+    - name: Build docker witch eshop
+      shell: cd app && docker build -t eshop:latest .
+      become: yes
+
+    - name: Run docker with eshop
+      shell: docker run -p 80:3000 eshop
+      async: 45
+      poll: 0
+      become: yes
+
+    - wait_for:
+        port: 80
